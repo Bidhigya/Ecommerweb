@@ -12,9 +12,10 @@ import Tabs from 'react-bootstrap/Tabs';
 import { apiUrl, userToken } from "./common/Http";
 import { CartContext } from "./context/Cart";
 import { toast } from "react-toastify";
-import Pagination from "./Pagination";
+
 import ReactStars from "react-rating-stars-component";
 import Aos from "aos";
+import { AuthContext } from "./context/Auth";
 const Product = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [rating, setRating] = useState(4);
@@ -24,6 +25,8 @@ const Product = () => {
   const [portSelected, setPortSelected] = useState(null);
   const params=useParams();
   const {addToCart}=useContext(CartContext);
+ const { user, isLoggedIn } = useContext(AuthContext);
+
     const navigate = useNavigate();
     const fetchProducts=async()=>{
       await fetch(apiUrl+'/get-product/'+params.id,{
@@ -51,7 +54,7 @@ const Product = () => {
   
 
 const handleAddToCart = async () => {
-  if (!userToken()) {
+  if (!isLoggedIn()) {
     toast.warning("Please login to continue");
     return;
   }
@@ -90,7 +93,7 @@ const handleAddToCart = async () => {
     // ✅ Validation passed
     if (productPorts.length > 0) {
       if (!portSelected) {
-        toast.warning("Please select a size");
+        toast.warning("Please select a Color");
         return;
       }
       addToCart(product, portSelected);
@@ -251,7 +254,7 @@ const handleAddToCart = async () => {
 </div>
 
     <div className="pt-3">
-    <strong className="">Select the size</strong>
+    <strong className="">Select the color</strong>
    
 <div className="sizes pt-2">
 
@@ -270,12 +273,7 @@ const handleAddToCart = async () => {
     <button onClick={()=>handleAddToCart()} className="btn btn-primary text-uppercase">Add To Cart</button>
 </div>
 
-{/* <hr />
-<div>
-  <strong>SKU:</strong>
-  {product.sku}
-</div> */}
-            
+<hr />            
           </div>
         </div>
         <div className="row  py-5">
